@@ -1,0 +1,55 @@
+### Required Authentication Variables
+user_ocid        = "ocid1.user.oc1..aa..."
+fingerprint      = "eb:16:93:..."
+tenancy_ocid     = "ocid1.tenancy.oc1..aa..."
+region           = "us-ashburn-1"
+private_key_path = "/path_to/oci_api_key.pem"
+compartment_id = "ocid1.compartment.oc1..aaa..."
+
+### Database Variables
+service_name = "sgtech"
+adb_type                     = "Always Free Oracle Autonomous Data Warehouse (1 OCPU 20 GB Storage)"
+# See adb_type_enum variable for valid values
+adb_compartment_ocid         = "ocid1.compartment.oc1..aaa..."
+adb_level                    = "low"
+# valid values are low, medium or high
+adb_user                     = "studio_repo"
+adb_user_password_ocid       = "ocid1.vaultsecret.oc1.iad.amaaa..."
+adb_name                     = "adw"
+adb_version                  = "19c"
+adb_license_model            = "LICENSE_INCLUDED"
+# valid values are LICENSE_INCLUDED or BRING_YOUR_OWN_LICENSE
+adb_cpu_core_count           = 1
+adb_data_storage_size_in_tbs = 1 
+adb_enable_auto_scale        = false
+
+### Compute variables
+compute_compartment_ocid = "ocid1.compartment.oc1..aaa..."
+# Usually the same as the stack's compartment_id
+instance_shape = {
+    "instanceShape" = "VM.Standard.E4.Flex",
+    "ocpus" = 1,
+    "memory" = 16,
+}
+
+ssh_public_key           = "ssh-rsa AAAAB3Nz..."
+availability_domain_name = "OUGC:US-ASHBURN-AD-1"
+console_ssl_port         = "4040"
+admin_user               = "studio_admin"
+admin_pwd_ocid           = "ocid1.vaultsecret.oc1.iad.amaaa..."
+
+### Compute's network variables
+network_compartment_ocid = "ocid1.compartment.oc1..aaa..."
+vcn_strategy             = "Create New VCN"
+# valid values are "Create New VCN" or "Use Existing VCN"
+# if "Create New VCN" option is selected below variables are required
+vcn_name    = "vcn"
+subnet_name = "subnet"
+vcn_cidr    = "10.0.0.0/16"
+subnet_cidr = "10.0.0.0/24"
+
+# if "Use Existing VCN" option is selected below variables are required
+# existing_vcn_id = "ocid1.vcn.oc1..."
+# subnet_id       = "ocid1.subnet.oc1..."
+
+

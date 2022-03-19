@@ -1,0 +1,504 @@
+# This file maps the variables to the appropriate UI fields
+#
+# Make sure to set default values for hidden required fields in the variables
+# definition file
+
+# Title shown in Application Information tab.
+title: "Spatial Studio"
+# Sub Title shown in Application Information tab.
+description: "Oracle Quickstart - Autonomous Database and Spatial Studio OCI Deployment stack"
+schemaVersion: 1.1.0
+version: "20190304"
+
+# URL of Logo Icon used on Application Information tab. You can copy the contentId from the Marketplace listing logo URL in the Marketplace Partner portal.
+# (Optional)
+logoUrl: "https://cloudmarketplace.oracle.com/marketplace/content?contentId=71472213"
+
+# Used in Application Information tab to Hyperlink Title and Logo to the Marketplace
+# Listing.
+# Also used to link to Listing Usage section for "View Instructions".
+# (Optional) If it is missing, Application Information uses the
+# "marketplace-listing-id" tag for the same purpose.
+source:
+  type: marketplace
+  reference: 71472162
+locale: "en"
+variableGroups:
+  - title: "Autonomous Database configuration"
+    variables:
+      - adb_compartment_ocid
+      - service_name
+      - adb_type
+      - adb_cpu_core_count
+      - adb_data_storage_size_in_tbs
+      - adb_enable_auto_scale
+      - adb_license_model
+      - adb_name
+      - adb_version
+
+  - title: "Spatial Studio configuration"
+    variables:
+      - availability_domain_name
+      - instance_shape
+      - console_ssl_port
+      - admin_user
+      - admin_pwd_show_compartment
+      - admin_pwd_secret_compartment
+      - admin_pwd_ocid
+      - network_compartment_id
+      - vcn_strategy
+      - existing_vcn_id
+      - vcn_name
+      - vcn_cidr
+      - subnet_id
+      - subnet_name
+      - subnet_cidr
+      - adb_user
+      - adb_user_show_compartment
+      - adb_user_secret_compartment
+      - adb_user_password_ocid
+      - adb_level
+      - ssh_public_key
+
+  - title: "Tags"
+    variables:
+      - show_tag_options
+      - defined_tag
+
+  - title: "Hidden variables"
+    visible: false #"variables used internally - not exposed to end user"
+    variables:
+      - use_secrets
+      - tenancy_ocid
+      - region
+      - compartment_ocid
+      - admin_pwd
+      - vcn_strategy_enum
+      - adb_type_enum
+      - user_id
+      - fingerprint
+      - private_key_path
+      - use_marketplace_image
+      - mp_listing_id
+      - mp_listing_resource_version
+      - instance_image_id
+      - marketplace_source_images
+
+variables:
+  # SGTECH Instance Configuration
+  service_name:
+    type: string
+    minLength: 1
+    maxLength: 8
+    pattern: "^[a-zA-Z][a-zA-Z0-9]{0,7}$"
+    title: Resource name prefix
+    description: The names of all compute and network resources will begin with this prefix. It can only contain letters or numbers and must begin with a letter.
+    required: true
+
+  instance_shape:
+    type: oci:core:instanceshapewithflex:name
+    title: Server instance shape
+    description: The <a target="_blank" href="https://docs.cloud.oracle.com/iaas/Content/Compute/References/computeshapes.htm">shape</a> for the server compute instance. A shape is a template that determines the number of CPUs, amount of memory, and other resources allocated to an instance.
+    required: true
+    dependsOn:
+      compartmentId: compartment_ocid
+      imageId: instance_image_id
+      availabilityDomain: availability_domain_name
+
+  ssh_public_key:
+    type: oci:core:ssh:publickey
+    title: SSH public key
+    description: SSH public key for the Spatial Studio server. Linux-based instances use an <a target="_blank" href="https://docs.cloud.oracle.com/iaas/Content/Compute/Tasks/managingkeypairs.htm">SSH key pair</a> instead of a password to authenticate remote users. Generate a key pair and upload your own public key now. When you <a target="_blank" href="https://docs.cloud.oracle.com/iaas/Content/Compute/Tasks/accessinginstance.htm">connect to the instance</a>, you will provide the associated private key.
+    required: true
+    pattern: "((^(ssh-rsa AAAAB3NzaC1yc2|ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNT|ecdsa-sha2-nistp384 AAAAE2VjZHNhLXNoYTItbmlzdHAzODQAAAAIbmlzdHAzOD|ecdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1Mj|ssh-ed25519 AAAAC3NzaC1lZDI1NTE5|ssh-dss AAAAB3NzaC1kc3)[0-9A-Za-z+\/]+[=]{0,3})( [^,]*)?)(,((ssh-rsa AAAAB3NzaC1yc2|ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNT|ecdsa-sha2-nistp384 AAAAE2VjZHNhLXNoYTItbmlzdHAzODQAAAAIbmlzdHAzOD|ecdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1Mj|ssh-ed25519 AAAAC3NzaC1lZDI1NTE5|ssh-dss AAAAB3NzaC1kc3)[0-9A-Za-z+\/]+[=]{0,3})( [^,]*)?)*$"
+  
+  availability_domain_name:
+    type: oci:identity:availabilitydomain:name
+    title: Server availability domain
+    description: Select the <a target="_blank" href="https://docs.cloud.oracle.com/iaas/Content/General/Concepts/regions.htm">availability domain</a> in which to create the server compute instance. The availability domain also helps determine which shapes are available.
+    required: true
+    dependsOn:
+      compartmentId: compartment_ocid
+    default: ""
+
+   # Advanced Configuration Option
+  console_ssl_port:
+    type: integer
+    minimum: 1024
+    maximum: 65535
+    multipleOf: 1
+    title: Server SSL (HTTPS) port
+    description: The server port on which to send application traffic
+    required: true
+
+  admin_user:
+    type: string
+    title: Spatial Studio admin username
+    description: User with Spatial Studio administrator role
+    pattern: "^[a-zA-Z_][a-zA-Z0-9_]{4,64}$"
+    minLength: 5
+    maxLength: 128
+    required: true
+
+  admin_pwd_show_compartment:
+    type: boolean
+    title: Select a different compartment for the Spatial Studio admin password secret
+    required: true
+
+  admin_pwd_secret_compartment:
+    visible: admin_pwd_show_compartment
+    type: oci:identity:compartment:id
+    title: Compartment containing the Spatial Studio admin password secret 
+    required: true
+    default: compartment_ocid
+
+  admin_pwd_ocid:
+    type: oci:kms:secret:id
+    title: Secret for the Spatial Studio admin password
+    description: <a target="_blank" href="https://docs.cloud.oracle.com/iaas/Content/KeyManagement/Tasks/managingsecrets.htm">Secret</a> that contains the password for Spatial Studio administrator.
+    required: true
+    dependsOn:
+      compartmentId: admin_pwd_secret_compartment
+
+# Network Type Options
+  network_compartment_id:
+    type: oci:identity:compartment:id
+    title: Network compartment
+    description: Compartment where you want to create the <a target="_blank" href="https://docs.cloud.oracle.com/iaas/Content/Network/Concepts/overview.htm">network resources</a> such as Virtual Cloud Network, security lists, route tables and gateways.
+    required: true
+    default: compartment_ocid
+
+  vcn_strategy:
+    type: enum
+    title: Virtual cloud network strategy
+    description: Create or use existing VCN
+    enum:
+      - "Create New VCN"
+      - "Use Existing VCN"
+    required: true
+    default: "Create New VCN"
+
+  # Network Configuration
+  vcn_name:
+    visible:
+      eq:
+        - vcn_strategy
+        - "Create New VCN"
+    type: string
+    minLength: 1
+    maxLength: 255
+    pattern: "^[a-zA-Z_]\\w{0,254}$"
+    required: true
+    title: Server network
+    description: The name for the new virtual cloud network (VCN) to create for this service.
+
+  vcn_cidr:
+    visible:
+      eq:
+        - vcn_strategy
+        - "Create New VCN"
+    type: string
+    pattern: "^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\\/(3[0-2]|[1-2]?[0-9])$"
+    required: true
+    title: Server network CIDR
+    description: "The CIDR to assign to the new virtual cloud network (VCN) to create for this service. This field is not required if you want to use an existing VCN. The new VCN's CIDR should not overlap with any other existing VCN CIDR. Example: 10.0.0.0/16"
+
+  existing_vcn_id:
+    visible:
+      eq:
+        - vcn_strategy
+        - "Use Existing VCN"
+    type: oci:core:vcn:id
+    dependsOn:
+      compartmentId: network_compartment_id
+    required: true
+    title: Existing network
+    description: An existing virtual cloud network (VCN) in which to create the compute instance and network resources. If not specified, a new VCN is created.
+
+  subnet_cidr:
+    visible:
+      eq:
+        - vcn_strategy
+        - "Create New VCN"
+    type: string
+    pattern: "^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\\/(3[0-2]|[1-2]?[0-9])$"
+    required: true
+    title: Server subnet CIDR
+    description: "The CIDR of the new public regional subnet to create for server compute instance. The new subnet's CIDR should not overlap with any other subnet CIDRs. Example: 10.0.0.0/24"
+
+  subnet_id:
+    visible:
+        eq:
+          - vcn_strategy
+          - "Use Existing VCN"
+    type: oci:core:subnet:id
+    dependsOn:
+      vcnId: existing_vcn_id
+      compartmentId: network_compartment_id
+      hidePrivateSubnet: true
+    required: true
+    title: Existing subnet for server
+    description: "Select an existing public subnet to use for server compute instances"
+
+  subnet_name:
+    visible: 
+      eq:
+        - vcn_strategy
+        - "Create New VCN"
+    type: string
+    required: true
+    title: Intance server subnet name
+    description: The name of the new subnet to create for server compute instances. This field is required only if you want to use an existing VCN.
+
+  # Database variables
+  adb_compartment_ocid:
+    type: oci:identity:compartment:id
+    required: true
+    title: Autonomous Database compartment
+    description: The compartment in which to create or find the database resources
+    default: compartment_ocid
+
+  adb_type:
+    type: enum
+    enum:
+      - "Always Free Oracle Autonomous Data Warehouse (1 OCPU 20 GB Storage)"
+      - "Paid Oracle Autonomous Data Warehouse"
+    title: Database Type
+    required: true
+
+  adb_cpu_core_count:
+    visible: 
+      eq:
+        - adb_type
+        - "Paid Oracle Autonomous Data Warehouse"
+    type: integer
+    minimum: 1
+    maximum: 128
+    multipleOf: 1
+    title: The number of OCPU cores to be made available to the database
+    description: The number of OCPU cores to enable. Available cores are subject to your tenancy's service limits
+    required: true
+    
+  adb_data_storage_size_in_tbs:
+    visible: 
+      eq:
+        - adb_type
+        - "Paid Oracle Autonomous Data Warehouse"
+    type: number
+    minimum: 1
+    maximum: 128
+    multipleOf: 1
+    title: The quantity of data in the database, in terabytes
+    description: The amount of storage to allocate
+    required: true
+
+  adb_enable_auto_scale:
+    visible: 
+      eq:
+        - adb_type
+        - "Paid Oracle Autonomous Data Warehouse"
+    type: boolean
+    title: Enable auto scaling for the Autonomous Data Warehouse CPU core count
+    required: true
+
+  adb_license_model:
+    visible: 
+      eq:
+        - adb_type
+        - "Paid Oracle Autonomous Data Warehouse"
+    type: enum
+    title: "Database license type"
+    description: "Select to subscribe to new Oracle database software license or bring your organization's Oracle database software licence"
+    required: true
+    enum:
+      - "BRING_YOUR_OWN_LICENSE"
+      - "LICENSE_INCLUDED"
+
+  adb_name:
+    type: string
+    title: "Database name"
+    description: "The name for the Autonomous Database instance. The deployment id (4 characters random string) will be added to the end of the DB name."
+    minLength: 1
+    maxLength: 10
+    pattern: "^[a-zA-Z][a-zA-Z0-9]+$"
+    required: true
+
+  adb_version:
+    type: oci:database:autonomousdatabaseversion:id
+    title: "Database version"
+    description: "The available Autonomous Data Warehouse versions"
+    required: true
+    default: "19c"
+    dependsOn:
+      compartmentId: ${adb_compartment_ocid}
+      dbWorkload: "DW"
+
+  adb_level:
+    type: enum
+    enum:
+      - low
+      - medium
+      - high
+    default: low
+    required: true
+    title: Autonomous Data Warehouse service level
+    description: Autonomous Data Warehouse service level for the Spatial Studio repository connection 
+
+  adb_user:
+    type: string
+    required: true
+    title: Database username
+    description: The Autonomous Data Warehouse user for the Spatial Studio metadata repository
+
+  adb_user_show_compartment:
+    type: boolean
+    title: Select a different compartment for the database password secret
+    required: true
+ 
+  adb_user_secret_compartment:
+    visible: adb_user_show_compartment
+    type: oci:identity:compartment:id
+    title: Compartment containing the Spatial Studio repository secret
+    required: true
+    default: compartment_ocid
+
+  adb_user_password_ocid:
+    type: oci:kms:secret:id
+    required: true
+    title: Database password secret
+    description: <a target="_blank" href="https://docs.cloud.oracle.com/iaas/Content/KeyManagement/Tasks/managingsecrets.htm">Secret</a> that contains the password for the Spatial Studio repository user
+    dependsOn:
+      compartmentId: compartment_ocid
+
+  # Tagging variables
+  show_tag_options: 
+    type: boolean
+    title: Enable tagging for the resources
+    description: Enable tagging for the resources created in this stack.
+
+  defined_tag:
+    visible: show_tag_options
+    type: oci:identity:tag:value
+    title: Tagging
+
+  tenancy_ocid:
+    type: string
+    title: Tenancy ID
+    description: The Oracle Cloud Identifier (OCID) for your tenancy
+    required: true
+
+  region:
+    type: oci:identity:region:name
+    title: Region
+    description: The region in which to create all resources
+    required: true
+
+  compartment_ocid:
+    type: oci:identity:compartment:id
+    title: Instance server compartment
+    description: The compartment in which to create the server compute instances
+    required: true
+
+  user_id:
+    type: string
+
+  private_key_path:
+    type: string
+
+  fingerprint:
+    type: string
+
+  mp_listing_resource_version:
+    type: string
+
+  mp_listing_id:
+    type: string
+
+outputGroups:
+  - title: Database details
+    outputs:
+      - adb_id
+      - adb_password
+
+  - title: Instance details
+    outputs:
+      - instance_name
+      - instance_id
+      - instance_public_ip
+      - instance_private_ip
+
+  - title: Network details
+    outputs:
+      - vcn_id
+      - vcn_cidr_block
+      - subnet_id
+      - nsg_id
+
+  - title: Dev Notes
+    outputs:
+      - comments
+      - certificates_note
+
+outputs:
+  instance_https_url:
+    type: link
+    title: Open Spatial Studio
+    visible: false
+  
+  instance_name:
+    title: Instance name
+    visible: true
+  
+  instance_id:
+    type: ocid
+    title: Instance OCID
+    visible: true
+
+  instance_private_ip:
+    title: Private IP
+    visible: true
+
+  instance_public_ip:
+    title: Public IP
+
+  vcn_id:
+    type: ocid
+    title: VCN OCID
+    visible: true
+  
+  subnet_id:
+    type: ocid
+    title: Subnet OCID
+    visible: true
+  
+  vcn_cidr_block:
+    title: VCN CIDR Block
+    visible: true
+  
+  nsg_id:
+    type: ocid
+    title: NSG OCID
+    visible: true
+
+  adb_id:
+    type: ocid
+    title: Autonomous Data Warehouse OCID
+    visible: true
+
+  adb_password:
+    type: string
+    title: Database admin password
+    displayText: Autonomous Database admin password
+    sensitive: true
+
+  comments:
+    type: string
+    title: Comments
+    visible: true
+
+  certificates_note:
+    type: string
+    title: Notes
+    visible: true
+
+primaryOutputButton: instance_https_url
