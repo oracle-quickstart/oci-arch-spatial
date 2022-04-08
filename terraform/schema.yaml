@@ -368,7 +368,7 @@ variables:
     title: Database password secret
     description: <a target="_blank" href="https://docs.cloud.oracle.com/iaas/Content/KeyManagement/Tasks/managingsecrets.htm">Secret</a> that contains the password for the Spatial Studio repository user
     dependsOn:
-      compartmentId: compartment_ocid
+      compartmentId: adb_user_secret_compartment
 
   # Tagging variables
   show_tag_options: 
