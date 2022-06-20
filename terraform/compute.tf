@@ -44,6 +44,8 @@ resource "oci_core_instance" "simple-vm" {
     #This random string will be used for the new database's admin and sgtech users
     dba_password=random_string.autonomous_database_admin_password.result
 
+    is_public = local.is_public_subnet
+
     #required, to distinguish if DB is new or an existing one will be used, set this to false and pass an empty adb_id 
     #to skip database metadata repository configuration
     create_adb_user = true 
@@ -60,7 +62,7 @@ resource "oci_core_instance" "simple-vm" {
     #required to set max/min connections for studio
     is_free_adb = local.is_free_adb
 
-    debug_enabled=true
+    enable_idcs = false
 
   }
 

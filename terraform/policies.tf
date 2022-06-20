@@ -5,6 +5,7 @@ locals {
 }
 
 resource "oci_identity_dynamic_group" "spatial_instance_principal_group" {
+  provider    = oci.home
   compartment_id = var.tenancy_ocid
   description    = "dynamic group to allow access to resources"
   matching_rule  = "ALL { ${local.compartment} }"
@@ -30,6 +31,7 @@ locals {
 }
 
 resource "oci_identity_policy" "spatial_policy" {
+  provider    = oci.home
   compartment_id = var.tenancy_ocid
   description    = "policy that allows instance principal access to the CLI api from the instance"
   name           = "${var.service_name}-policy-${random_string.deploy_id.result}"

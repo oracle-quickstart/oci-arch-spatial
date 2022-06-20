@@ -75,7 +75,7 @@ variableGroups:
       - admin_pwd
       - vcn_strategy_enum
       - adb_type_enum
-      - user_id
+      - user_ocid
       - fingerprint
       - private_key_path
       - use_marketplace_image
@@ -399,7 +399,7 @@ variables:
     description: The compartment in which to create the server compute instances
     required: true
 
-  user_id:
+  user_ocid:
     type: string
 
   private_key_path:
