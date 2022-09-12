@@ -23,19 +23,12 @@ locals {
   listing_resource_id      = local.compute_image_id
   listing_resource_version = var.mp_listing_resource_version
 
-  compute_flexible_shapes = [
-    "VM.Standard.E3.Flex",
-    "VM.Standard.E4.Flex",
-    "VM.Standard3.Flex",
-    "VM.Optimized3.Flex"
-  ]
-
   compute_arm_shapes = [
     "VM.Standard.A1.Flex"
   ]
 
   # local.is_flex_shape referenced in compute.tf
-  is_flex_shape = contains(local.compute_flexible_shapes,var.instance_shape.instanceShape) ? [1] : []
+  is_flex_shape = contains(split(".",var.instance_shape.instanceShape), "Flex") ? [1] : []
   
   is_arm_shape = contains(local.compute_arm_shapes,var.instance_shape.instanceShape) ? true : false
 

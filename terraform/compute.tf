@@ -37,6 +37,7 @@ resource "oci_core_instance" "simple-vm" {
     ssh_authorized_keys = var.ssh_public_key
     user_data           = base64encode(file("./scripts/bootstrap.sh"))
 
+    https_only = true
     server_ssl_port = var.console_ssl_port
     use_secrets     = var.use_secrets
     admin_user = var.admin_user
@@ -58,7 +59,8 @@ resource "oci_core_instance" "simple-vm" {
     #required when using existing adb, optional for new one and will be defaulted to sgtech
     adb_user = var.adb_user
     #required when using existing adb, optional for new one and will be defaulted to admin's
-    adb_user_password_ocid = var.adb_user_password_ocid 
+    adb_user_pwd = var.adb_user_password_ocid 
+    adb_use_secrets = true
     #required to set max/min connections for studio
     is_free_adb = local.is_free_adb
 
