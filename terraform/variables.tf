@@ -190,11 +190,11 @@ variable "mp_listing_id" {
 
 # Package version Reference
 variable "mp_listing_resource_version" {
-  default = "22.2.0.1"
+  default = "24.2.1.2"
 }
 
 # Use this variable along the use_marketplace_image to specify either the
 # Image artifact ocid to use the latest official marketplace image or your custom image ocid
 variable "instance_image_id" {
-  default = "ocid1.image.oc1..aaaaaaaalrslmrm5tx6eitzqs46usxmpyddj3yzmxrp63pb5ij4ibx4vyw5q"
+  default = "ocid1.image.oc1..aaaaaaaa5tx4jueip3vydjwseteviovcj7ty27rmrl5cifkyqnghal7noy3q"
 }
